@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Document</title>
+	<title>Family Trail</title>
 
 	<link rel="import" href="./trail-person/trail-person.html">
 	<link rel="import" href="./trail-event/trail-event.html">
@@ -25,7 +25,7 @@
 			border-radius: 3px;
 			font-size: 2rem;
 			background-color: transparent;
-			border: none;
+			border: solid 1px;
 			cursor: pointer;
 		}
 
@@ -36,30 +36,120 @@
 			transform:rotateY(180deg);
 		}
 
+    #loading {
+      display: none;
+    }
+
+    #form {
+      font-size: 1.25rem;
+      margin: auto;
+    }
+
+    #form div {
+      margin: 10px;
+    }
+
+    header h1 {
+      text-align: center;
+    }
+
+    #new-trail-button {
+      display: none;
+    }
+
 	</style>
 
 </head>
 <body>
+  <header>
 
+    <h1>Family Trail</h1>
+
+    <button id="new-trail-button" onclick="showForm()">New Trail</button>
+
+    <form id="form">
+      <div>Ancestor PID: <input type="text" name="source" value="LN4S-6B9"></div>
+      <div>Descendant PID: <input type="text" name="target" value="KWXL-XD7"></div>
+      <div>Session ID: <input type="text" name="sessionId" value="7a70effd-80b0-4889-ac07-3a336074c72e-production"></div>
+
+      <button type="button" onclick="run()">Go</button>
+
+      <p id="loading">LOADING!</p>
+
+    </form>
+
+
+
+  </header>
+
+	<!--
 	<button id="previous-event-button" onclick="showPreviousEvent()">►</button>
 	<button id="next-event-button" onclick="showNextEvent()">►</button>
-
-	<div id="people-container"></div>
-	<div id="event-container"></div>
-	<div id="hidden-event-container" style="display: none;"></div>
-
-
-	<script src="./test-data.js"></script>
+	-->
+	<div id="event-container" style="display: none;"></div>
+	<div id="hidden-event-container"></div>
 
 	<script>
 
-/*
-		trail.people.forEach((person)=>{
-			const personElement = document.createElement('trail-person');
-			personElement.data = person;
-			document.getElementById('people-container').appendChild(personElement);
-		});
-*/
+
+    let trail;
+    let trailEventElements = [];
+    let currentEventIndex = 0;
+
+    function getTrail() {
+      document.getElementById('loading').style.display='block';
+
+      var form = document.getElementById("form");
+      var source = form.elements[0].value;
+      var target = form.elements[1].value;
+      var sessionId = form.elements[2].value;
+      var args = source + " " + target + " " + sessionId;
+
+      var exec = require('child_process').exec;
+
+      const promise = new Promise((resolve, reject)=>{
+        exec('java -jar -Xmx512M -Dfile.encoding=utf8 family-trail.jar ' + target + ' ' + source + ' ' + sessionId, function callback(error, stdout, stderr){
+          document.getElementById('loading').style.display = 'none';
+          hideForm();
+
+          if(stderr) {
+            reject(stderr);
+          } else {
+            resolve(JSON.parse(stdout));
+          }
+        });
+      });
+
+      return promise;
+    }
+
+    function run() {
+      getTrail().then((newTrail)=>{
+        trail = newTrail;
+
+        initNewTrail();
+      }).catch((e)=>{
+        console.log('Unable to create a trail. Make sure the ancestor and descendant PIDs are valid and related and you have a valid session id.');
+        throw(e);
+      });
+    }
+
+    function initNewTrail() {
+      trail.events.forEach((event, index)=>{
+        const eventElement = document.createElement('trail-event');
+        eventElement.data = event;
+        eventElement.people = trail.people;
+        if(index !== 0 && trail.events[index-1].person.personId === event.person.personId) {
+          eventElement.hidePersonName = true;
+        }
+        trailEventElements.push(eventElement);
+        document.getElementById('hidden-event-container').appendChild(eventElement);
+      });
+
+      document.getElementById('event-container').appendChild(trailEventElements[0]);
+    }
+
+
 
 		document.addEventListener('keydown', function(e){
 			switch(e.key) {
@@ -72,17 +162,7 @@
 			}
 		});
 
-		const trailEventElements = [];
-		let currentEventIndex = 0;
 
-		trail.events.forEach((event)=>{
-			const eventElement = document.createElement('trail-event');
-			eventElement.data = event;
-			trailEventElements.push(eventElement);
-			document.getElementById('hidden-event-container').appendChild(eventElement);
-		});
-
-		document.getElementById('event-container').appendChild(trailEventElements[0]);
 
 		function showNextEvent() {
 			if(currentEventIndex === trailEventElements.length - 1) return;
@@ -130,6 +210,16 @@
 
 		function showPreviousEventButton() {
 			document.getElementById('previous-event-button').style.visibility = 'visible';
+		}
+
+		function showForm() {
+      document.getElementById('new-trail-button').style.display = 'none';
+      document.getElementById('form').style.display = 'block';
+    }
+
+    function hideForm() {
+      document.getElementById('new-trail-button').style.display = 'inline';
+      document.getElementById('form').style.display = 'none';
 		}
 	</script>
 </body>
