@@ -1,0 +1,36 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="trail-person">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>[[data.name]]</h2>
+  </template>
+
+  <script>
+    /**
+     * `trail-person`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class TrailPerson extends Polymer.Element {
+      static get is() { return 'trail-person'; }
+      static get properties() {
+        return {
+          data: {
+            type: Object,
+            value: {}
+          }
+        };
+      }
+    }
+
+    window.customElements.define(TrailPerson.is, TrailPerson);
+  </script>
+</dom-module>

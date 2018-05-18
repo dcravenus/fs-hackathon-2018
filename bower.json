@@ -1,0 +1,14 @@
+{
+  "name": "fs-trail-ui",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "2.x"
+  }
+}

@@ -1,0 +1,103 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+
+<dom-module id="trail-event">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      a:hover {
+        filter: brightness(.75);
+      }
+
+      a:active {
+        filter: brightness(.5);
+      }
+
+      img {
+        max-width: 50vw;
+        max-height: 50vh;
+      }
+    </style>
+
+    <h1>[[data.type]]</h1>
+
+    <template is="dom-if" if="[[isMemory(data)]]">
+      <p>[[data.person.name]]</p>
+      <p><a href="[[data.url]]"><img src="[[artifact.url]]" on-error="hideErrorImg" on-load="showImg"></a></p>
+      <caption>[[artifact.title]]</caption>
+    </template>
+
+    <template is="dom-if" if="[[isBirth(data)]]">
+        <p>[[data.person.name]] was born<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+    </template>
+
+    <template is="dom-if" if="[[isMarriage(data)]]">
+        <p>[[data.person.name]] was married<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+    </template>
+
+  </template>
+
+  <script>
+    /**
+     * `trail-event`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class TrailEvent extends Polymer.Element {
+      static get is() { return 'trail-event'; }
+      static get properties() {
+        return {
+          data: {
+            type: Object,
+            value: {},
+            observer: 'dataChanged'
+          },
+
+          artifact: {
+            type: Object,
+            value: {}
+          }
+        };
+      }
+
+      dataChanged() {
+        if(this.data.type === 'MEMORY') {
+          const artifactId = this.data.url.split('/').slice(-1).pop();
+          fetch(`https://www.familysearch.org/artifactmanager/artifacts/${artifactId}`).then((resp)=>{
+            resp.json().then((data)=>{
+              this.artifact = data;
+            });
+          })
+        }
+      }
+
+      isMemory() {
+        return this.data.type === 'MEMORY';
+      }
+
+      isBirth() {
+        return this.data.type === 'BIRTH';
+      }
+
+      isMarriage() {
+        return this.data.type === 'MARRIAGE';
+      }
+
+      hideErrorImg(e) {
+        e.target.style.display = 'none';
+      }
+
+      showImg(e) {
+        e.target.style.display = 'inline';
+      }
+    }
+
+    window.customElements.define(TrailEvent.is, TrailEvent);
+  </script>
+</dom-module>

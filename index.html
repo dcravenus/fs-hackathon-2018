@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+
+	<link rel="import" href="./trail-person/trail-person.html">
+	<link rel="import" href="./trail-event/trail-event.html">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+	<style>
+		body {
+			font-family: 'Montserrat', sans-serif;
+			color: #444444;
+			background-color: #eeeeee;
+		}
+
+		trail-event {
+			margin: 30px;
+		}
+
+		button {
+			border-radius: 3px;
+			font-size: 2rem;
+			background-color: transparent;
+			border: none;
+			cursor: pointer;
+		}
+
+		#previous-event-button {
+			visibility: hidden;
+
+			/* Rotate the right arrow so they'll both be the same size */
+			transform:rotateY(180deg);
+		}
+
+	</style>
+
+</head>
+<body>
+
+	<button id="previous-event-button" onclick="showPreviousEvent()">►</button>
+	<button id="next-event-button" onclick="showNextEvent()">►</button>
+
+	<div id="people-container"></div>
+	<div id="event-container"></div>
+	<div id="hidden-event-container" style="display: none;"></div>
+
+
+	<script src="./test-data.js"></script>
+
+	<script>
+
+/*
+		trail.people.forEach((person)=>{
+			const personElement = document.createElement('trail-person');
+			personElement.data = person;
+			document.getElementById('people-container').appendChild(personElement);
+		});
+*/
+
+		const trailEventElements = [];
+		let currentEventIndex = 0;
+
+		trail.events.forEach((event)=>{
+			const eventElement = document.createElement('trail-event');
+			eventElement.data = event;
+			trailEventElements.push(eventElement);
+			document.getElementById('hidden-event-container').appendChild(eventElement);
+		});
+
+		document.getElementById('event-container').appendChild(trailEventElements[0]);
+
+		function showNextEvent() {
+			currentEventIndex++;
+			if(currentEventIndex === trailEventElements.length) currentEventIndex = 0;
+			const container = document.getElementById('event-container');
+			const oldNode = document.querySelector('#event-container trail-event');
+			const newNode = trailEventElements[currentEventIndex];
+			container.removeChild(oldNode);
+			container.appendChild(newNode);
+
+			if(currentEventIndex === trailEventElements.length - 1) {
+				hideNextEventButton();
+			}
+
+			showPreviousEventButton();
+		}
+
+		function showPreviousEvent() {
+			currentEventIndex--;
+			if(currentEventIndex === -1) currentEventIndex = trailEventElements.length - 1;
+			const container = document.getElementById('event-container');
+			const oldNode = document.querySelector('#event-container trail-event');
+			const newNode = trailEventElements[currentEventIndex];
+			container.removeChild(oldNode);
+			container.appendChild(newNode);
+
+			if(currentEventIndex === 0) {
+				hidePreviousEventButton();
+			}
+
+			showNextEventButton();
+		}
+
+		function hideNextEventButton() {
+			document.getElementById('next-event-button').style.visibility = 'hidden';
+		}
+
+		function showNextEventButton() {
+			document.getElementById('next-event-button').style.visibility = 'visible';
+		}
+
+		function hidePreviousEventButton() {
+			document.getElementById('previous-event-button').style.visibility = 'hidden';
+		}
+
+		function showPreviousEventButton() {
+			document.getElementById('previous-event-button').style.visibility = 'visible';
+		}
+	</script>
+</body>
+</html>
