@@ -22,20 +22,35 @@
       }
     </style>
 
-    <h1>[[data.type]]</h1>
+    <h1 hidden="[[hidePersonName]]"><a href="https://www.familysearch.org/tree/person/details/[[data.person.personId]]" on-click="openLink">[[data.person.name]]</a></h1>
+    <h2>[[data.type]]</h2>
 
     <template is="dom-if" if="[[isMemory(data)]]">
-      <p>[[data.person.name]]</p>
-      <p><a href="[[data.url]]"><img src="[[artifact.url]]" on-error="hideErrorImg" on-load="showImg"></a></p>
-      <caption>[[artifact.title]]</caption>
+      <p>[[data.person.name]] was featured in a <a href="[[data.url]]" on-click="openLink">memory</a>.</p>
+      <p><a href="[[data.url]]" on-click="openLink"><img src="[[artifact.url]]" on-error="hideErrorImg" on-load="showImg"></a></p>
+      <h3>[[artifact.title]]</h3>
+      <p>[[data.date.text]]</p>
+      <p>[[data.place.text]]</p>
     </template>
 
     <template is="dom-if" if="[[isBirth(data)]]">
-        <p>[[data.person.name]] was born<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+        <p>[[data.person.name]] was born<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span><span>[[getBirthParentsString(data, people)]]</span>.</p>
     </template>
 
     <template is="dom-if" if="[[isMarriage(data)]]">
-        <p>[[data.person.name]] was married<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+        <p>[[data.person.name]] was married<span>[[getMarriageSpouseString(data, people)]]</span><span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+    </template>
+
+    <template is="dom-if" if="[[isDeath(data)]]">
+        <p>[[data.person.name]] passed away<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+    </template>
+
+    <template is="dom-if" if="[[isBurial(data)]]">
+        <p>[[data.person.name]] was buried<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+    </template>
+
+    <template is="dom-if" if="[[isChristening(data)]]">
+        <p>[[data.person.name]] was christened<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
     </template>
 
   </template>
@@ -62,6 +77,16 @@
           artifact: {
             type: Object,
             value: {}
+          },
+
+          people: {
+            type: Object,
+            value: []
+          },
+
+          hidePersonName: {
+            type: Boolean,
+            value: false
           }
         };
       }
@@ -89,12 +114,70 @@
         return this.data.type === 'MARRIAGE';
       }
 
+      isDeath() {
+        return this.data.type === 'DEATH';
+      }
+
+      isBurial() {
+        return this.data.type === 'BURIAL';
+      }
+
+      isChristening() {
+        return this.data.type === 'CHRISTENING';
+      }
+
       hideErrorImg(e) {
         e.target.style.display = 'none';
       }
 
       showImg(e) {
         e.target.style.display = 'inline';
+      }
+
+      getPersonById(id) {
+        return this.people.find((person)=>{
+          return person.personId === id;
+        });
+      }
+
+      getBirthParentsString() {
+        let fatherName = '';
+        let motherName = '';
+
+        if(this.data.person.fatherId) {
+          fatherName = this.getPersonById(this.data.person.fatherId).name;
+        }
+
+        if(this.data.person.motherId) {
+          motherName = this.getPersonById(this.data.person.motherId).name;
+        }
+
+        if(fatherName && motherName) {
+          return ` to ${fatherName} and ${motherName}`;
+        }
+
+        if(fatherName) {
+          return ` to ${fatherName}`;
+        }
+
+        if(motherName) {
+          return ` to ${motherName}`;
+        }
+
+        return '';
+      }
+
+      getMarriageSpouseString() {
+        if(this.data.person.spouseId) {
+          return ` to ${this.getPersonById(this.data.person.spouseId).name}`;
+        }
+        return '';
+      }
+
+      openLink(e) {
+        e.preventDefault();
+        const {shell} = require('electron');
+        shell.openExternal(e.currentTarget.href);
       }
     }
 
