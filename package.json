@@ -1,0 +1,14 @@
+{
+  "name": "family-trail",
+  "version": "1.0.0",
+  "description": "This app helps users to explore defferent lines in a family tree on FamilySearch.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "James Nelson, Derrick Craven",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^2.0.0"
+  }
+}

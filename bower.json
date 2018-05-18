@@ -1,0 +1,14 @@
+{
+  "name": "family-trail",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "2.x"
+  }
+}

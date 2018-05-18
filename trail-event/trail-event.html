@@ -1,0 +1,186 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+
+<dom-module id="trail-event">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      a:hover {
+        filter: brightness(.75);
+      }
+
+      a:active {
+        filter: brightness(.5);
+      }
+
+      img {
+        max-width: 50vw;
+        max-height: 50vh;
+      }
+    </style>
+
+    <h1 hidden="[[hidePersonName]]"><a href="https://www.familysearch.org/tree/person/details/[[data.person.personId]]" on-click="openLink">[[data.person.name]]</a></h1>
+    <h2>[[data.type]]</h2>
+
+    <template is="dom-if" if="[[isMemory(data)]]">
+      <p>[[data.person.name]] was featured in a <a href="[[data.url]]" on-click="openLink">memory</a>.</p>
+      <p><a href="[[data.url]]" on-click="openLink"><img src="[[artifact.url]]" on-error="hideErrorImg" on-load="showImg"></a></p>
+      <h3>[[artifact.title]]</h3>
+      <p>[[data.date.text]]</p>
+      <p>[[data.place.text]]</p>
+    </template>
+
+    <template is="dom-if" if="[[isBirth(data)]]">
+        <p>[[data.person.name]] was born<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span><span>[[getBirthParentsString(data, people)]]</span>.</p>
+    </template>
+
+    <template is="dom-if" if="[[isMarriage(data)]]">
+        <p>[[data.person.name]] was married<span>[[getMarriageSpouseString(data, people)]]</span><span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+    </template>
+
+    <template is="dom-if" if="[[isDeath(data)]]">
+        <p>[[data.person.name]] passed away<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+    </template>
+
+    <template is="dom-if" if="[[isBurial(data)]]">
+        <p>[[data.person.name]] was buried<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+    </template>
+
+    <template is="dom-if" if="[[isChristening(data)]]">
+        <p>[[data.person.name]] was christened<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
+    </template>
+
+  </template>
+
+  <script>
+    /**
+     * `trail-event`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class TrailEvent extends Polymer.Element {
+      static get is() { return 'trail-event'; }
+      static get properties() {
+        return {
+          data: {
+            type: Object,
+            value: {},
+            observer: 'dataChanged'
+          },
+
+          artifact: {
+            type: Object,
+            value: {}
+          },
+
+          people: {
+            type: Object,
+            value: []
+          },
+
+          hidePersonName: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+
+      dataChanged() {
+        if(this.data.type === 'MEMORY') {
+          const artifactId = this.data.url.split('/').slice(-1).pop();
+          fetch(`https://www.familysearch.org/artifactmanager/artifacts/${artifactId}`).then((resp)=>{
+            resp.json().then((data)=>{
+              this.artifact = data;
+            });
+          })
+        }
+      }
+
+      isMemory() {
+        return this.data.type === 'MEMORY';
+      }
+
+      isBirth() {
+        return this.data.type === 'BIRTH';
+      }
+
+      isMarriage() {
+        return this.data.type === 'MARRIAGE';
+      }
+
+      isDeath() {
+        return this.data.type === 'DEATH';
+      }
+
+      isBurial() {
+        return this.data.type === 'BURIAL';
+      }
+
+      isChristening() {
+        return this.data.type === 'CHRISTENING';
+      }
+
+      hideErrorImg(e) {
+        e.target.style.display = 'none';
+      }
+
+      showImg(e) {
+        e.target.style.display = 'inline';
+      }
+
+      getPersonById(id) {
+        return this.people.find((person)=>{
+          return person.personId === id;
+        });
+      }
+
+      getBirthParentsString() {
+        let fatherName = '';
+        let motherName = '';
+
+        if(this.data.person.fatherId) {
+          fatherName = this.getPersonById(this.data.person.fatherId).name;
+        }
+
+        if(this.data.person.motherId) {
+          motherName = this.getPersonById(this.data.person.motherId).name;
+        }
+
+        if(fatherName && motherName) {
+          return ` to ${fatherName} and ${motherName}`;
+        }
+
+        if(fatherName) {
+          return ` to ${fatherName}`;
+        }
+
+        if(motherName) {
+          return ` to ${motherName}`;
+        }
+
+        return '';
+      }
+
+      getMarriageSpouseString() {
+        if(this.data.person.spouseId) {
+          return ` to ${this.getPersonById(this.data.person.spouseId).name}`;
+        }
+        return '';
+      }
+
+      openLink(e) {
+        e.preventDefault();
+        const {shell} = require('electron');
+        shell.openExternal(e.currentTarget.href);
+      }
+    }
+
+    window.customElements.define(TrailEvent.is, TrailEvent);
+  </script>
+</dom-module>
