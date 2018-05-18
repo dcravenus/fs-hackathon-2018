@@ -61,6 +61,17 @@
 		});
 */
 
+		document.addEventListener('keydown', function(e){
+			switch(e.key) {
+				case 'ArrowRight':
+					showNextEvent();
+					break;
+				case 'ArrowLeft':
+					showPreviousEvent();
+					break;
+			}
+		});
+
 		const trailEventElements = [];
 		let currentEventIndex = 0;
 
@@ -74,8 +85,8 @@
 		document.getElementById('event-container').appendChild(trailEventElements[0]);
 
 		function showNextEvent() {
+			if(currentEventIndex === trailEventElements.length - 1) return;
 			currentEventIndex++;
-			if(currentEventIndex === trailEventElements.length) currentEventIndex = 0;
 			const container = document.getElementById('event-container');
 			const oldNode = document.querySelector('#event-container trail-event');
 			const newNode = trailEventElements[currentEventIndex];
@@ -90,8 +101,8 @@
 		}
 
 		function showPreviousEvent() {
+			if(currentEventIndex === 0) return;
 			currentEventIndex--;
-			if(currentEventIndex === -1) currentEventIndex = trailEventElements.length - 1;
 			const container = document.getElementById('event-container');
 			const oldNode = document.querySelector('#event-container trail-event');
 			const newNode = trailEventElements[currentEventIndex];
