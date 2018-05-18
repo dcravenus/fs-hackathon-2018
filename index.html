@@ -170,12 +170,7 @@
 
   </header>
 
-	<!--
-	<button id="previous-event-button" onclick="showPreviousEvent()">►</button>
-	<button id="next-event-button" onclick="showNextEvent()">►</button>
-	-->
-	<div id="event-container" style="display: none;"></div>
-	<div id="hidden-event-container"></div>
+	<div id="event-container"></div>
 
 	<script>
 
@@ -210,7 +205,7 @@
 
     function run() {
       document.getElementById('error-message').style.display = 'none';
-      document.getElementById('hidden-event-container').innerHTML = '';
+      document.getElementById('event-container').innerHTML = '';
 
       getTrail().then((newTrail)=>{
         hideLoading();
@@ -234,74 +229,10 @@
           eventElement.hidePersonName = true;
         }
         trailEventElements.push(eventElement);
-        document.getElementById('hidden-event-container').appendChild(eventElement);
+        document.getElementById('event-container').appendChild(eventElement);
       });
 
-      document.getElementById('event-container').appendChild(trailEventElements[0]);
     }
-
-
-
-		document.addEventListener('keydown', function(e){
-			switch(e.key) {
-				case 'ArrowRight':
-					showNextEvent();
-					break;
-				case 'ArrowLeft':
-					showPreviousEvent();
-					break;
-			}
-		});
-
-
-
-		function showNextEvent() {
-			if(currentEventIndex === trailEventElements.length - 1) return;
-			currentEventIndex++;
-			const container = document.getElementById('event-container');
-			const oldNode = document.querySelector('#event-container trail-event');
-			const newNode = trailEventElements[currentEventIndex];
-			container.removeChild(oldNode);
-			container.appendChild(newNode);
-
-			if(currentEventIndex === trailEventElements.length - 1) {
-				hideNextEventButton();
-			}
-
-			showPreviousEventButton();
-		}
-
-		function showPreviousEvent() {
-			if(currentEventIndex === 0) return;
-			currentEventIndex--;
-			const container = document.getElementById('event-container');
-			const oldNode = document.querySelector('#event-container trail-event');
-			const newNode = trailEventElements[currentEventIndex];
-			container.removeChild(oldNode);
-			container.appendChild(newNode);
-
-			if(currentEventIndex === 0) {
-				hidePreviousEventButton();
-			}
-
-			showNextEventButton();
-		}
-
-		function hideNextEventButton() {
-			document.getElementById('next-event-button').style.visibility = 'hidden';
-		}
-
-		function showNextEventButton() {
-			document.getElementById('next-event-button').style.visibility = 'visible';
-		}
-
-		function hidePreviousEventButton() {
-			document.getElementById('previous-event-button').style.visibility = 'hidden';
-		}
-
-		function showPreviousEventButton() {
-			document.getElementById('previous-event-button').style.visibility = 'visible';
-		}
 
 		function showForm() {
       document.getElementById('new-trail-button').style.display = 'none';
