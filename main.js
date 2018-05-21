@@ -1,13 +1,15 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, session} = require('electron')
   const path = require('path')
   const url = require('url')
+
+
 
   // Keep a global reference of the window object, if you don't, the window will
   // be closed automatically when the JavaScript object is garbage collected.
   let win
+  let sessionId
 
   function createWindow () {
-
     var server = require("http-server/bin/http-server");
 
     const ses = session.defaultSession;
@@ -41,11 +43,7 @@ const {app, BrowserWindow} = require('electron')
     win = new BrowserWindow({width: 1680, height: 967})
 
     // and load the index.html of the app.
-    win.loadURL(url.format({
-      pathname: path.join(__dirname, 'index.html'),
-      protocol: 'file:',
-      slashes: true
-    }))
+    win.loadURL('http://localhost:8080')
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -76,6 +74,7 @@ const {app, BrowserWindow} = require('electron')
     if (win === null) {
       createWindow()
     }
+
   })
 
   // In this file you can include the rest of your app's specific main process
