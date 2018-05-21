@@ -84,6 +84,29 @@
       display: none;
     }
 
+    #login-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    #login-wrapper #logged-in-message {
+      flex-basis: 100%;
+      text-align: center;
+      display: none;
+    }
+
+    #login-wrapper button {
+      margin: auto;
+    }
+
+    #event-container {
+      min-width: 800px;
+    }
+
+    #trail-wrapper {
+      display: none;
+    }
+
     /* Loading Styles
      * Spinner from: https://github.com/tobiasahlin/SpinKit
      */
@@ -142,29 +165,38 @@
 
     <h1>Family Trail</h1>
 
-    <button id="new-trail-button" onclick="showForm()">New Trail</button>
+    <div id="login-wrapper">
+      <button onclick="login()">Login</button>
+      <p id="logged-in-message">You are logged in.</p>
+    </div>
 
-    <form id="form">
-      <div>Ancestor Person ID: <input type="text" name="source" value="KWJT-JPP"></div>
-      <div>Descendant Person ID: <input type="text" name="target" value="LK6D-TMM"></div>
-      <div>Session ID: <input type="text" name="sessionId" value="7a70effd-80b0-4889-ac07-3a336074c72e-production"></div>
 
-      <button id="run-button" type="button" onclick="run()">Go</button>
+    <div id="trail-wrapper">
+      <button id="new-trail-button" onclick="showForm()">New Trail</button>
 
-      <div id="loading">
-        <div class="spinner">
-          <div class="bounce1"></div>
-          <div class="bounce2"></div>
-          <div class="bounce3"></div>
+      <form id="form">
+        <div>Ancestor Person ID: <input type="text" name="source" value="KWJT-JPP"></div>
+        <div>Descendant Person ID: <input type="text" name="target" value="LK6D-TMM"></div>
+
+        <button id="run-button" type="button" onclick="run()">Go</button>
+
+        <div id="loading">
+          <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+          </div>
         </div>
-      </div>
 
-      <div id="error-message">
-        <p>Unable to create a trail.</p>
-        <p>Make sure you are logged in, the person ids are correct, and both people are related.</p>
-      </div>
+        <div id="error-message">
+          <p>Unable to create a trail.</p>
+          <p>Make sure you are logged in, the person ids are correct, and both people are related.</p>
+        </div>
 
-    </form>
+      </form>
+
+    </div>
+
 
 
 
@@ -173,11 +205,21 @@
 	<div id="event-container"></div>
 
 	<script>
-
-
     let trail;
     let trailEventElements = [];
     let currentEventIndex = 0;
+    let sessionId;
+    const regex = /sessionId=([a-zA-Z0-9-]*)/;
+    const matches = regex.exec(window.location.search)
+    if(matches && matches.length > 1){
+      sessionId = matches[1];
+    }
+
+    if(sessionId) {
+      document.getElementById('logged-in-message').style.display = 'block';
+      document.getElementById('trail-wrapper').style.display = 'block';
+      document.getElementById('login-wrapper').style.float = 'right';
+    }
 
     function getTrail() {
       showLoading();
@@ -185,8 +227,6 @@
       var form = document.getElementById("form");
       var source = form.elements[0].value;
       var target = form.elements[1].value;
-      var sessionId = form.elements[2].value;
-      var args = source + " " + target + " " + sessionId;
 
       var exec = require('child_process').exec;
 
@@ -252,6 +292,10 @@
     function hideLoading() {
       document.getElementById('run-button').style.display='inline';
       document.getElementById('loading').style.display='none';
+    }
+
+    function login() {
+      window.location.href = "http://www.familysearch.org/auth/familysearch/login?returnUrl=http%3A%2F%2Ffamilysearch.org";
     }
 	</script>
 </div>
