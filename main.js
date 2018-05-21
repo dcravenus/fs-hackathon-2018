@@ -10,6 +10,8 @@ const {app, BrowserWindow, session} = require('electron')
   let sessionId
 
   function createWindow () {
+    var server = require("http-server/bin/http-server");
+
     const ses = session.defaultSession;
     ses.webRequest.onHeadersReceived((response, callback)=> {
 
@@ -36,7 +38,6 @@ const {app, BrowserWindow, session} = require('electron')
       }
 
     });
-
 
     // Create the browser window.
     win = new BrowserWindow({width: 1680, height: 967})
