@@ -261,14 +261,24 @@
     }
 
     function initNewTrail() {
+      const gotoMap = {};
+      let prevPersonId = "";
       trail.events.forEach((event, index)=>{
         const eventElement = document.createElement('trail-event');
         eventElement.data = event;
         eventElement.people = trail.people;
-        if(index !== 0 && trail.events[index-1].person.personId === event.person.personId) {
+        if (event.person.personId !== prevPersonId && gotoMap[event.person.personId]) {
+          gotoMap[event.person.personId].gotoNext = index;
+        }
+        gotoMap[event.person.personId] = eventElement;
+        prevPersonId = event.person.personId;
+        if (index !== 0 && trail.events[index-1].person.personId === event.person.personId) {
           eventElement.hidePersonName = true;
         }
         trailEventElements.push(eventElement);
+        const anchorTag = document.createElement('a');
+        anchorTag.setAttribute("name", index);
+        document.getElementById('event-container').appendChild(anchorTag);
         document.getElementById('event-container').appendChild(eventElement);
       });
 
