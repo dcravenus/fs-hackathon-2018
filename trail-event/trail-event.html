@@ -53,6 +53,9 @@
         <p>[[data.person.name]] was christened<span hidden="[[!data.date.text]]"> on [[data.date.text]]</span><span hidden="[[!data.place.name]]"> at [[data.place.name]]</span>.</p>
     </template>
 
+    <template is="dom-if" if="[[gotoNext]]">
+        <a href="#[[gotoNext]]">Go to next event for [[data.person.name]].</a>
+    </template>
   </template>
 
   <script>
@@ -87,6 +90,11 @@
           hidePersonName: {
             type: Boolean,
             value: false
+          },
+
+          gotoNext: {
+            type: Number,
+            value: 0
           }
         };
       }
