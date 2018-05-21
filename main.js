@@ -7,6 +7,36 @@ const {app, BrowserWindow} = require('electron')
   let win
 
   function createWindow () {
+
+    var server = require("http-server/bin/http-server");
+
+    const ses = session.defaultSession;
+    ses.webRequest.onHeadersReceived((response, callback)=> {
+
+
+      if(response.responseHeaders['Set-Cookie'] || response.responseHeaders['set-cookie']) {
+        let cookie = response.responseHeaders['Set-Cookie'] ? response.responseHeaders['Set-Cookie'] : response.responseHeaders['set-cookie'];
+        cookie = cookie[0];
+        const regex = /fssessionid=([a-zA-Z0-9-]*)/;
+        if(~cookie.indexOf('fssessionid')){
+          const matches = regex.exec(cookie);
+          sessionId = matches[1];
+        }
+      }
+
+      callback({});
+
+    }, {urls: ["http://www.familysearch.org/auth/familysearch/login"]}, ["responseHeaders"]);
+
+    ses.webRequest.onBeforeRequest((details, callback)=>{
+      if(details.url === 'http://familysearch.org/') {
+        callback({redirectURL: 'http://localhost:8080?sessionId=' + sessionId});
+      } else {
+        callback({});
+      }
+
+    });
+
     // Create the browser window.
     win = new BrowserWindow({width: 1680, height: 967})
 
