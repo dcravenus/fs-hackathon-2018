@@ -1,0 +1,63 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="trail-summary">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Trail Summary</h2>
+    <div>People: [[people]]</div>
+    <div>Events: [[events]]</div>
+	<div id="events">
+	    <div>Births: [[births]]</div>
+	    <div>Christenings: [[christenings]]</div>
+	    <div>Marriages: [[marriages]]</div>
+	    <div>Deaths: [[deaths]]</div>
+	    <div>Burials: [[burials]]</div>
+	    <div>Memories: [[memories]]</div>
+	</div>
+  </template>
+
+  <script>
+    /**
+     * `trail-summary`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class TrailSummary extends Polymer.Element {
+      static get is() { return 'trail-summary'; }
+      static get properties() {
+        return {
+          people: {
+            type: Number
+          },
+          events: {
+            type: Number
+          },
+          births: {
+            type: Number
+          },
+          christenings: {
+            type: Number
+          },
+          marriages: {
+            type: Number
+          },
+          deaths: {
+            type: Number
+          },
+          burials: {
+            type: Number
+          }
+        };
+      }
+    }
+
+    window.customElements.define(TrailSummary.is, TrailSummary);
+  </script>
+</dom-module>
