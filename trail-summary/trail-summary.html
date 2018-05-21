@@ -6,19 +6,41 @@
       :host {
         display: block;
       }
+
+      #events {
+        margin-left: 30px;
+      }
+
+      #summary-wrapper {
+        display: flex;
+        justify-content: space-around;
+      }
+
+      #summary-item {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      h1 {
+        text-align: center;
+      }
     </style>
-    <h2>Trail Summary</h2>
+    <h1>Trail Summary</h1>
+    <div id="summary-wrapper">
     <div>Going from [[ancestor]] through [[descendant]]. Found the following:</div>
-    <div>Number of People: [[people]]</div>
-    <div>Total number of Events: [[events]]</div>
-	<div id="events">
-	    <div>Number of Births: [[births]]</div>
-	    <div>Number of Christenings: [[christenings]]</div>
-	    <div>Number of Marriages: [[marriages]]</div>
-	    <div>Number of Deaths: [[deaths]]</div>
-	    <div>Number of Burials: [[burials]]</div>
-	    <div>Number of Memories: [[memories]]</div>
-	</div>
+        <h2 class="summary-item">Number of People: [[people]]</h2>
+        <div>
+          <h2 class="summary-item">Total number of Events: [[events]]</h2>
+          <div id="events">
+              <h3>Number of Births: [[births]]</h3>
+              <h3>Number of Christenings: [[christenings]]</h3>
+              <h3>Number of Marriages: [[marriages]]</h3>
+              <h3>Number of Deaths: [[deaths]]</h3>
+              <h3>Number of Burials: [[burials]]</h3>
+              <h3>Number of Memories: [[memories]]</h3>
+          </div>
+        </div>
+    </div>
   </template>
 
   <script>
