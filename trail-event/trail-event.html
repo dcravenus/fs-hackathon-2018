@@ -20,9 +20,19 @@
         max-width: 50vw;
         max-height: 50vh;
       }
+
+      #portrait {
+        border-radius: 50%;
+        max-height: 100px;
+        vertical-align: middle;
+        margin-right: 10px;
+      }
     </style>
 
-    <h1 hidden="[[hidePersonName]]"><a href="https://www.familysearch.org/tree/person/details/[[data.person.personId]]" on-click="openLink">[[data.person.name]]</a></h1>
+    <h1 hidden="[[hidePersonName]]">
+      <img id="portrait" src="[[portraitUrl]]" hidden="[[!portraitUrl]]">
+      <a href="https://www.familysearch.org/tree/person/details/[[data.person.personId]]" on-click="openLink">[[data.person.name]]</a>
+    </h1>
     <h2>[[data.type]]</h2>
 
     <template is="dom-if" if="[[isMemory(data)]]">

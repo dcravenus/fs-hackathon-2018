@@ -195,8 +195,8 @@
       <button id="new-trail-button" onclick="showForm()">New Trail</button>
 
       <form id="form">
-        <div>Ancestor Person ID: <input type="text" name="source" value="KWJT-JPP"></div>
-        <div>Descendant Person ID: <input type="text" name="target" value="LK6D-TMM"></div>
+        <div>Ancestor Person ID: <input type="text" name="source"></div>
+        <div>Descendant Person ID: <input type="text" name="target"></div>
 
         <button id="run-button" type="button" onclick="run()">Go</button>
 
@@ -241,6 +241,9 @@
     }
 
     function getTrail() {
+      if(document.querySelector('trail-summary')) {
+        document.querySelector('trail-summary').remove();
+      }
       showLoading();
 
       var form = document.getElementById("form");
@@ -300,6 +303,21 @@
         }
 
         const eventElement = document.createElement('trail-event');
+
+        //Get portrait
+        fetch(`https://www.familysearch.org/service/memories/manager/persons/personsByTreePersonId/${event.person.personId}/summary`,{
+          headers: {
+            'Authorization': 'Bearer ' + sessionId,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        }).then((resp)=>{
+          resp.json().then((data)=>{
+            eventElement.portraitUrl = data.thumbSquareUrl;
+          });
+        });
+
+
         eventElement.data = event;
         eventElement.people = trail.people;
         switch (event.type) {
@@ -347,12 +365,14 @@
         containerDiv.appendChild(eventElement);
 
       });
-	  
+
       var form = document.getElementById("form");
       var source = form.elements[0].value;
       var target = form.elements[1].value;
-      summary.ancestor = trail.people.find((person)=>{return person.personId === source;}).name;
-      summary.descendant = trail.people.find((person)=>{return person.personId === target;}).name;
+      summary.ancestorName = trail.people.find((person)=>{return person.personId === source;}).name;
+      summary.descendantName = trail.people.find((person)=>{return person.personId === target;}).name;
+      summary.ancestorPid = source;
+      summary.descendantPid = target;
 	  summary.people = Object.keys(gotoMap).length;
 	  summary.events = trail.events.length;
 	  summary.births = births;
@@ -362,7 +382,7 @@
 	  summary.burials = burials;
 	  summary.memories = memories;
     }
-	
+
 	function showForm() {
       document.getElementById('new-trail-button').style.display = 'none';
       document.getElementById('form').style.display = 'block';
