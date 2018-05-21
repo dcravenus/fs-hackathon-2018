@@ -26,18 +26,19 @@
       }
     </style>
     <h1>Trail Summary</h1>
+    <h3 style="text-align: center;">Going from [[ancestorName]] ([[ancestorPid]]) through [[descendantName]] ([[descendantPid]]). Found the following:</h3>
+
     <div id="summary-wrapper">
-    <div>Going from [[ancestor]] through [[descendant]]. Found the following:</div>
-        <h2 class="summary-item">Number of People: [[people]]</h2>
+        <h3 class="summary-item">Number of People: [[people]]</h3>
         <div>
-          <h2 class="summary-item">Total number of Events: [[events]]</h2>
+          <h3 class="summary-item">Total number of Events: [[events]]</h3>
           <div id="events">
-              <h3>Number of Births: [[births]]</h3>
-              <h3>Number of Christenings: [[christenings]]</h3>
-              <h3>Number of Marriages: [[marriages]]</h3>
-              <h3>Number of Deaths: [[deaths]]</h3>
-              <h3>Number of Burials: [[burials]]</h3>
-              <h3>Number of Memories: [[memories]]</h3>
+              <p>Number of Births: [[births]]</p>
+              <p>Number of Christenings: [[christenings]]</p>
+              <p>Number of Marriages: [[marriages]]</p>
+              <p>Number of Deaths: [[deaths]]</p>
+              <p>Number of Burials: [[burials]]</p>
+              <p>Number of Memories: [[memories]]</p>
           </div>
         </div>
     </div>
@@ -56,10 +57,16 @@
       static get is() { return 'trail-summary'; }
       static get properties() {
         return {
-          ancestor: {
+          ancestorName: {
             type: String
           },
-          descendant: {
+          descendantName: {
+            type: String
+          },
+          ancestorPid: {
+            type: String
+          },
+          descendantPid: {
             type: String
           },
           people: {
