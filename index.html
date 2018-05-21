@@ -8,6 +8,7 @@
 
 	<link rel="import" href="./trail-person/trail-person.html">
 	<link rel="import" href="./trail-event/trail-event.html">
+	<link rel="import" href="./trail-summary/trail-summary.html">
 	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
 	<style>
@@ -192,7 +193,6 @@
           <p>Unable to create a trail.</p>
           <p>Make sure you are logged in, the person ids are correct, and both people are related.</p>
         </div>
-
       </form>
 
     </div>
@@ -261,12 +261,40 @@
     }
 
     function initNewTrail() {
+      const summary = document.createElement('trail-summary');
+      document.getElementById('trail-wrapper').appendChild(summary);
       const gotoMap = {};
       let prevPersonId = "";
+      let births = 0;
+      let christenings = 0;
+      let marriages = 0;
+      let deaths = 0;
+      let burials = 0;
+      let memories = 0;
       trail.events.forEach((event, index)=>{
         const eventElement = document.createElement('trail-event');
         eventElement.data = event;
         eventElement.people = trail.people;
+        switch (event.type) {
+          case "BIRTH":
+            births += 1;
+            break;
+          case "CHRISTENING":
+            christenings += 1;
+            break;
+          case "MARRIAGE":
+          	marriages += 1;
+          	break;
+          case "DEATH":
+          	deaths += 1;
+          	break;
+          case "BURIAL":
+          	burials += 1;
+          	break;
+          case "MEMORY":
+          	memories += 1;
+          	break;
+		}
         if (event.person.personId !== prevPersonId && gotoMap[event.person.personId]) {
           gotoMap[event.person.personId].gotoNext = index;
         }
@@ -282,6 +310,14 @@
         document.getElementById('event-container').appendChild(eventElement);
       });
 
+	  summary.people = Object.keys(gotoMap).length;
+	  summary.events = trail.events.length;
+	  summary.births = births;
+	  summary.christenings = christenings;
+	  summary.marriages = marriages;
+	  summary.deaths = deaths;
+	  summary.burials = burials;
+	  summary.memories = memories;
     }
 
 		function showForm() {
