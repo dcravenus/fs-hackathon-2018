@@ -122,6 +122,11 @@
       margin: 30px;
     }
 
+    trail-summary {
+      clear: both;
+      padding: 30px 60px;
+    }
+
     /* Loading Styles
      * Spinner from: https://github.com/tobiasahlin/SpinKit
      */
@@ -276,6 +281,7 @@
 
     function initNewTrail() {
       const summary = document.createElement('trail-summary');
+      summary.classList.add('person-card');
       document.getElementById('trail-wrapper').appendChild(summary);
       const gotoMap = {};
       let prevPersonId = "";
