@@ -6,18 +6,41 @@
       :host {
         display: block;
       }
+
+      #events {
+        margin-left: 30px;
+      }
+
+      #summary-wrapper {
+        display: flex;
+        justify-content: space-around;
+      }
+
+      #summary-item {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      h1 {
+        text-align: center;
+      }
     </style>
-    <h2>Trail Summary</h2>
-    <div>People: [[people]]</div>
-    <div>Events: [[events]]</div>
-	<div id="events">
-	    <div>Births: [[births]]</div>
-	    <div>Christenings: [[christenings]]</div>
-	    <div>Marriages: [[marriages]]</div>
-	    <div>Deaths: [[deaths]]</div>
-	    <div>Burials: [[burials]]</div>
-	    <div>Memories: [[memories]]</div>
-	</div>
+    <h1>Trail Summary</h1>
+    <div id="summary-wrapper">
+        <h2 class="summary-item">People: [[people]]</h2>
+        <div>
+          <h2 class="summary-item">Events: [[events]]</h2>
+          <div id="events">
+              <h3>Births: [[births]]</h3>
+              <h3>Christenings: [[christenings]]</h3>
+              <h3>Marriages: [[marriages]]</h3>
+              <h3>Deaths: [[deaths]]</h3>
+              <h3>Burials: [[burials]]</h3>
+              <h3>Memories: [[memories]]</h3>
+          </div>
+        </div>
+    </div>
+
   </template>
 
   <script>
