@@ -9,7 +9,8 @@
 	<link rel="import" href="./trail-person/trail-person.html">
 	<link rel="import" href="./trail-event/trail-event.html">
 	<link rel="import" href="./trail-summary/trail-summary.html">
-	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
 
 	<style>
 		body {
@@ -30,20 +31,25 @@
 		}
 
 		button {
-			border-radius: 20px;
-			font-size: 1.5rem;
-      background: linear-gradient(lightgreen, #7dce7d);
-      border: solid 1px green;
-			cursor: pointer;
-      padding: 5px 20px;
+      border-radius: 5px;
+      font-size: 1rem;
+      background-color: #108810;
+      border: none;
+      cursor: pointer;
+      padding: 5px 14px;
+      box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);
+      color: white;
+      text-transform: uppercase;
+      font-weight: 300;
+      font-family: 'Roboto', sans-serif;
 		}
 
     button:hover {
-      background: linear-gradient(#7dce7d, #279927);
+      background-color: #279927;
     }
 
     button:active {
-      background: linear-gradient(#279927, green);
+      background-color: green);
     }
 
 		#previous-event-button {
@@ -102,10 +108,18 @@
 
     #event-container {
       min-width: 800px;
+      clear: both;
     }
 
     #trail-wrapper {
       display: none;
+    }
+
+    .person-card {
+      background: white;
+      padding: 15px 25px;
+      box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);
+      margin: 30px;
     }
 
     /* Loading Styles
@@ -271,7 +285,14 @@
       let deaths = 0;
       let burials = 0;
       let memories = 0;
+      let containerDiv;
+
       trail.events.forEach((event, index)=>{
+        let isNewPerson = false;
+        if(event.person.personId !== prevPersonId) {
+          isNewPerson = true;
+        }
+
         const eventElement = document.createElement('trail-event');
         eventElement.data = event;
         eventElement.people = trail.people;
@@ -299,15 +320,26 @@
           gotoMap[event.person.personId].gotoNext = index;
         }
         gotoMap[event.person.personId] = eventElement;
+
         prevPersonId = event.person.personId;
         if (index !== 0 && trail.events[index-1].person.personId === event.person.personId) {
           eventElement.hidePersonName = true;
         }
         trailEventElements.push(eventElement);
+
+        if(isNewPerson) {
+          if(containerDiv) {
+            document.getElementById('event-container').appendChild(containerDiv);
+          }
+          containerDiv = document.createElement('div');
+          containerDiv.classList.add('person-card');
+        }
+
         const anchorTag = document.createElement('a');
         anchorTag.setAttribute("name", index);
-        document.getElementById('event-container').appendChild(anchorTag);
-        document.getElementById('event-container').appendChild(eventElement);
+        containerDiv.appendChild(anchorTag);
+        containerDiv.appendChild(eventElement);
+
       });
 
 	  summary.people = Object.keys(gotoMap).length;
