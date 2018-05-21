@@ -27,20 +27,20 @@
     </style>
     <h1>Trail Summary</h1>
     <div id="summary-wrapper">
-        <h2 class="summary-item">People: [[people]]</h2>
+    <div>Going from [[ancestor]] through [[descendant]]. Found the following:</div>
+        <h2 class="summary-item">Number of People: [[people]]</h2>
         <div>
-          <h2 class="summary-item">Events: [[events]]</h2>
+          <h2 class="summary-item">Total number of Events: [[events]]</h2>
           <div id="events">
-              <h3>Births: [[births]]</h3>
-              <h3>Christenings: [[christenings]]</h3>
-              <h3>Marriages: [[marriages]]</h3>
-              <h3>Deaths: [[deaths]]</h3>
-              <h3>Burials: [[burials]]</h3>
-              <h3>Memories: [[memories]]</h3>
+              <h3>Number of Births: [[births]]</h3>
+              <h3>Number of Christenings: [[christenings]]</h3>
+              <h3>Number of Marriages: [[marriages]]</h3>
+              <h3>Number of Deaths: [[deaths]]</h3>
+              <h3>Number of Burials: [[burials]]</h3>
+              <h3>Number of Memories: [[memories]]</h3>
           </div>
         </div>
     </div>
-
   </template>
 
   <script>
@@ -56,6 +56,12 @@
       static get is() { return 'trail-summary'; }
       static get properties() {
         return {
+          ancestor: {
+            type: String
+          },
+          descendant: {
+            type: String
+          },
           people: {
             type: Number
           },

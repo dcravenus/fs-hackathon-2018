@@ -347,7 +347,12 @@
         containerDiv.appendChild(eventElement);
 
       });
-
+	  
+      var form = document.getElementById("form");
+      var source = form.elements[0].value;
+      var target = form.elements[1].value;
+      summary.ancestor = trail.people.find((person)=>{return person.personId === source;}).name;
+      summary.descendant = trail.people.find((person)=>{return person.personId === target;}).name;
 	  summary.people = Object.keys(gotoMap).length;
 	  summary.events = trail.events.length;
 	  summary.births = births;
@@ -357,8 +362,8 @@
 	  summary.burials = burials;
 	  summary.memories = memories;
     }
-
-		function showForm() {
+	
+	function showForm() {
       document.getElementById('new-trail-button').style.display = 'none';
       document.getElementById('form').style.display = 'block';
     }
